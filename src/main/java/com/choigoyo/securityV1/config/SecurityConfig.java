@@ -37,6 +37,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 /*권한없는 page를 요청했을 때 login페이지 요청*/
                 .and()
                 .formLogin()
-                .loginPage("/loginForm");
+                .loginPage("/loginForm")
+                .loginProcessingUrl("/login") // 주소가 호출이되면 security login을 진행함 = > 컨트롤러에 login이 필요없음
+                .usernameParameter("email")
+                .defaultSuccessUrl("/"); // 로그인 성공하면 index페이지로 또는 인증이필요한 페이지를 반환
     }
 }

@@ -53,12 +53,6 @@ public class IndexController {
     public String loginForm(){
         return "loginForm";
     }
-    /**
-     * 로그인 */
-    @PostMapping("/login")
-    public String login(){
-        return "login";
-    }
 
 
     /**
