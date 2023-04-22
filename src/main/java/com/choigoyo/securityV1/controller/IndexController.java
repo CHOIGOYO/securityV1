@@ -3,10 +3,13 @@ package com.choigoyo.securityV1.controller;
 import com.choigoyo.securityV1.entity.User;
 import com.choigoyo.securityV1.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 
 /**
@@ -30,27 +33,27 @@ public class IndexController {
     /**
      * 유저*/
     @GetMapping("/user")
-    public String user(){
+    public @ResponseBody String user(){
         return "user";
     }
 
     /**
      * 관리자*/
     @GetMapping("/admin")
-    public String admin(){
+    public @ResponseBody String admin(){
         return "admin";
     }
     /**
      * 매니저*/
     @GetMapping("/manager")
-    public String manager(){
+    public @ResponseBody String manager(){
         return "manager";
     }
 
     /**
      * 로그인 폼으로이동 */
     @GetMapping("/loginForm")
-    public String loginForm(){
+    public  String loginForm(){
         return "loginForm";
     }
 
@@ -78,4 +81,19 @@ public class IndexController {
         return "redirect/loginForm";
     }
 
+    @Secured("ROLE_ADMIN") // 회원의 권한이 admin이면 접근가능하도록 설정
+    @GetMapping("/info")
+    public @ResponseBody String info(){
+        return "개인정보";
+    }
+
+    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_MANAGER')") // data매서드가 실행되기 직전에 실행된다 data 페이지는 매니저이거나 관리자만 접근할 수 있다.
+    @GetMapping("/data")
+    public @ResponseBody String data(){
+        return "data";
+    }
+
 }
+
+
+

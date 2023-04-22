@@ -2,11 +2,13 @@ package com.choigoyo.securityV1.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true) // secured 어노테이션과 preauthorize 어노테이션을 활성화
 @Configuration
 @EnableWebSecurity /*스프링 시큐리티 필터(SecurityConfig)가 스프링 기본 필터체인에 등록*/
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -40,6 +42,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginPage("/loginForm")
                 .loginProcessingUrl("/login") // 주소가 호출이되면 security login을 진행함 = > 컨트롤러에 login이 필요없음
                 .usernameParameter("email")
-                .defaultSuccessUrl("/"); // 로그인 성공하면 index페이지로 또는 인증이필요한 페이지를 반환
+                .defaultSuccessUrl("/") // 로그인 성공하면 index페이지로 또는 인증이필요한 페이지를 반환
+                .and()
+                .oauth2Login()
+                .loginPage("/loginForm"); // oauth2 로그인 페이지 설정
     }
 }
