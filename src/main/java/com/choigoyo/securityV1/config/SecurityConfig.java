@@ -1,25 +1,28 @@
 package com.choigoyo.securityV1.config;
 
-import org.springframework.context.annotation.Bean;
+import com.choigoyo.securityV1.config.oauth.PrincipalOauth2UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true) // secured 어노테이션과 preauthorize 어노테이션을 활성화
 @Configuration
 @EnableWebSecurity /*스프링 시큐리티 필터(SecurityConfig)가 스프링 기본 필터체인에 등록*/
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    /**
+    @Autowired
+    private PrincipalOauth2UserService principalOauth2UserService;
+
+/*    *//**
      * password 암호화 설정 내용
-     * */
+     * *//*
     @Bean // 해당 메서드의 리턴되는 obj를 ioc로 등록을 해줌
     public BCryptPasswordEncoder encodePwd(){
         return new BCryptPasswordEncoder();
-    }
+    } ------------------------순환참조 에러 삭제  */
 
     /**
      * page 권한 설정 내용
@@ -45,6 +48,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .defaultSuccessUrl("/") // 로그인 성공하면 index페이지로 또는 인증이필요한 페이지를 반환
                 .and()
                 .oauth2Login()
-                .loginPage("/loginForm"); // oauth2 로그인 페이지 설정
+                .loginPage("/loginForm") // oauth2 로그인 페이지 설정
+                //구글 로그인이 완료된 뒤 후처리가 필요 -> 엑세스토큰 + 사용자의 정보에 접근할 수 있는 권한이 생김
+                .userInfoEndpoint()
+                .userService(principalOauth2UserService);
     }
 }

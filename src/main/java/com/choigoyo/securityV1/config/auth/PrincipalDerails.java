@@ -1,11 +1,14 @@
 package com.choigoyo.securityV1.config.auth;
 
 import com.choigoyo.securityV1.entity.User;
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * security에서 login을 진행시킬 때 완료되면 security가 갖는 session을 만들어준다.(Security ContextHolder 키값에 session정보를 저장)
@@ -14,14 +17,31 @@ import java.util.Collection;
  *
  * Security session > Authentication > UserDetails(PrincipalDerails) _상속을 함으로서 가능
  * */
-public class PrincipalDerails implements UserDetails {
+@Data
+public class PrincipalDerails implements UserDetails,OAuth2User {
 
     private User user;
-
+    private Map<String,Object> attributes;
     /**
-     * 생성자*/
+     * 일반로그인 - 생성자*/
     public PrincipalDerails(User user) {
         this.user = user;
+    }
+    /**
+     * OAuth로그인 - 생성자*/
+    public PrincipalDerails(User user,Map<String,Object> attributes) {
+        this.user = user;
+        // attributes 정보를 같이 받는다.
+        this.attributes = attributes;
+    }
+
+    @Override // OAuth2User
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
+    @Override // OAuth2User
+    public String getName() {
+        return null;
     }
 
     /**
@@ -76,4 +96,6 @@ public class PrincipalDerails implements UserDetails {
         // 계정이 1년동안 회원이 로그인을 안하면 비활성화 (휴면계정 하기로 했다면 false 설정)
         return true;
     }
+
+
 }

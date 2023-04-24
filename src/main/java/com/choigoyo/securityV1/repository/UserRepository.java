@@ -12,4 +12,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
      * slect * frome user where email = ?
      * */
     User findByEmail(String email); // JAP 쿼리 메서드
+
+    User findByUsername(String userName);
 }

@@ -1,10 +1,13 @@
 package com.choigoyo.securityV1.controller;
 
+import com.choigoyo.securityV1.config.auth.PrincipalDerails;
 import com.choigoyo.securityV1.entity.User;
 import com.choigoyo.securityV1.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +26,19 @@ public class IndexController {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
+    @GetMapping("/test/login") // 사용자 정보 가져오기 테스트 페이지
+    public @ResponseBody String loginTest(Authentication authentication,
+                                          @AuthenticationPrincipal PrincipalDerails userDetails ){ // Authentication DI
+        System.out.println("/test/login");
+        System.out.println("======================");
+        PrincipalDerails principalDerails = (PrincipalDerails) authentication.getPrincipal();
+        System.out.println("principalDerails :"+principalDerails.getUser());
+        System.out.println("======================");
+        System.out.println("userDetails - UserName :"+userDetails.getUsername());
+        return"세션 정보 확인하기";
+    }
+
+
     /**
      *  localhost:8081 */
     @GetMapping("/")
@@ -30,10 +46,13 @@ public class IndexController {
         //  ser/main/resources/templates/...
         return "index";
     }
+
     /**
      * 유저*/
+    // OAuth2 로그인과 일반 로그인 모두 PrincipalDerails 를 가져와 컨트롤러를 분리할 필요 없어졌음
     @GetMapping("/user")
-    public @ResponseBody String user(){
+    public @ResponseBody String user(@AuthenticationPrincipal PrincipalDerails principalDerails){
+        System.out.println("principalDerails : "+principalDerails.getUser());
         return "user";
     }
 
