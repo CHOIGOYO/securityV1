@@ -10,4 +10,5 @@
    4. SECURITY - Spring Security
    5. SQL - MySQL Driver
    6. TEMPLATE ENGINES - Thymeleaf
-
+# Velog 학습내용 정리
+https://velog.io/@choigoyo_o/series/Spring-Security
